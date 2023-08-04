@@ -102,7 +102,7 @@ class FacetsEntity(BaseModel):
     def get_attrs(self) -> list[str]:
         return list(self.__dict__.keys())
 
-    def to_df(self, attr: str) -> DataFrame:
+    async def to_df(self, attr: str) -> DataFrame:
         attrs = self.__dict__
         if attr not in attrs:
             raise AttributeError(

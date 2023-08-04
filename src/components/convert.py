@@ -9,7 +9,7 @@ from src.core.logger import get_logger
 logger = get_logger(__name__)
 
 
-def separate_projects_srp_entity(
+async def separate_projects_srp_entity(
     items: list[dict[str, Any]],
 ) -> tuple[list, list]:
     """ Returns: (srp, project) """
@@ -24,8 +24,8 @@ def separate_projects_srp_entity(
     return srp, projects
 
 
-def convert_to_acres99_dict(d: dict) -> dict[str, Any]:
-    srp, projects = separate_projects_srp_entity(d['properties'])
+async def convert_to_acres99_dict(d: dict) -> dict[str, Any]:
+    srp, projects = await separate_projects_srp_entity(d['properties'])
 
     result = {
         'facets': d['facets'],
