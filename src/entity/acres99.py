@@ -71,7 +71,7 @@ class Acres99(BaseModel):
             'Drop %s rows from "%s"', df.duplicated().sum(), path.value
         )
         df = df.drop_duplicates(ignore_index=True)
-        df.to_csv(path.value)
+        df.to_csv(path.value, index=False)
 
     def export_dfs(
         self, extend: bool = True, drop_duplicates: bool = False,
