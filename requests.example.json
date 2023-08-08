@@ -1,0 +1,16 @@
+{
+  "url": "https://www.99acres.com/api-aggregator/discovery/srp/search",
+  "headers": {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:101.0) Gecko/20100101 Firefox/114.0"
+  },
+  "params": {
+    "page": "2",
+    "page_size": "25",
+    "platform": "DESKTOP",
+    "encrypted_input": "<important>",
+    "recomGroupType": "VSP",
+    "pageName": "SRP",
+    "search_type": "QS",
+    "groupByConfigurations": "true"
+  }
+}
