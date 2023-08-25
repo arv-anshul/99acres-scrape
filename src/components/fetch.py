@@ -20,9 +20,9 @@ def update_url_params(
     params_dict: dict,
     page_num: int,
     page_size: int,
-) -> dict:
-    if page_size > 1500:
-        raise ValueError('page_size <= 1500')
+) -> dict[str, str]:
+    if page_size > 1200:
+        raise ValueError('page_size <= 1200')
     params_dict['page'] = str(page_num)
     params_dict['page_size'] = str(page_size)
     return params_dict
@@ -54,16 +54,15 @@ async def response(
                 if r.status > 200:
                     logger.exception(msg)
                     raise aiohttp.ClientResponseError(
-                        request_info=r.request_info,
-                        history=(r,),
-                        status=r.status,
-                        message=msg,
+                        request_info=r.request_info, history=(r,), status=r.status, message=msg
                     )
 
                 if return_type == 'json':
                     return await r.json()
-                else:
+                elif return_type == 'text':
                     return await r.text()
+                else:
+                    raise ValueError('Param `return_type` must be in ["json", "text"].')
 
         except aiohttp.ClientResponseError as cre:
             logger.exception(f'Error fetching response: {cre}')
