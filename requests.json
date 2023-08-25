@@ -7,10 +7,6 @@
     "page": "2",
     "page_size": "25",
     "platform": "DESKTOP",
-    "encrypted_input": "<important>",
-    "recomGroupType": "VSP",
-    "pageName": "SRP",
-    "search_type": "QS",
-    "groupByConfigurations": "true"
+    "city": "12"
   }
 }
