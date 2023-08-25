@@ -28,6 +28,7 @@ def get_city_w_id_dict() -> dict[int, str]:
 
 
 def save_city_w_id_dict() -> None:
+    CITY_W_ID_PATH.parent.mkdir(exist_ok=True)
     with open(CITY_W_ID_PATH, 'w') as f:
         json.dump(get_city_w_id_dict(), f, indent=2, sort_keys=True)
 

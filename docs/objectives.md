@@ -16,7 +16,7 @@ Now I want to convert this project into Streamlit app.
 - [x] Find all the cities id to create URLs.
 - [x] Create a separate module which handles the DataFrames operations.
 - [x] Create class to deal with API requests.
-- [ ] Add a parameter to pass the city ID.
+- [x] Add a parameter to pass the city ID.
 
 ## TODO
 
