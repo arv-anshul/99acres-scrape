@@ -2,22 +2,21 @@ import asyncio
 
 from src.components.convert import convert_to_acres99_dict
 from src.components.fetch import response
+from src.database.operation import DataFrameOperations
 from src.entity import Acres99
 
-MAX_PAGE_NUM = 5
-MAX_PAGE_SIZE = 500
+MAX_PAGE_NUM = 1
+MAX_PAGE_SIZE = 30
 
 
 async def process_request(page_num: int, page_size: int):
-    data = await response(
-        page_num,
-        page_size,
-    )
+    data = await response(page_num, page_size)
 
     if isinstance(data, dict):
         acres99_dict = await convert_to_acres99_dict(data)
         acres = Acres99(**acres99_dict)
-        await acres.export_dfs(drop_duplicates=True)
+        df_operation = DataFrameOperations(acres)
+        await df_operation.export_dfs(drop_duplicates=True)
 
 
 async def main():
