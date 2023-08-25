@@ -58,6 +58,7 @@ async def fetch_response(
 async def fetch_all_responses(
     page_nums: list[int],
     prop_per_page: int,
+    city_id: int | None = None,
     **kwargs,
 ) -> list[Acres99Dict]:
     """
@@ -68,6 +69,9 @@ async def fetch_all_responses(
     """
     if len(kwargs) == 0:
         kwargs = get_requests_json()
+
+    if city_id:
+        kwargs['params']['city'] = city_id
 
     async with aiohttp.ClientSession() as session:
         responses = []

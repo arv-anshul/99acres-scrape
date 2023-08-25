@@ -8,15 +8,15 @@ PAGE_NUMS = range(1, 20)
 PROP_PER_PAGE = 500
 
 
-async def get_acres99_obj(page_nums: list[int], prop_per_page: int) -> Acres99:
-    responses = await fetch.fetch_all_responses(page_nums, prop_per_page)
+async def export_srp_df(
+    page_nums: list[int] | range,
+    prop_per_page: int,
+    city_id: int | None = None,
+) -> None:
+    responses = await fetch.fetch_all_responses(list(page_nums), prop_per_page, city_id=city_id)
     data = await convert.concat_responses(responses)
-    acres = Acres99(**data)
-    return acres
+    acres99 = Acres99(**data)
 
-
-async def export_srp_df(page_nums: list[int] | range, prop_per_page: int) -> None:
-    acres99 = await get_acres99_obj(list(page_nums), prop_per_page)
     df_op = DataFrameOperations(acres99)
 
     await df_op.export_df(await acres99.to_df('srp'), DFPath.srp)
