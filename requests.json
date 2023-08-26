@@ -1,7 +1,11 @@
 {
   "url": "https://www.99acres.com/api-aggregator/discovery/srp/search",
   "headers": {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:101.0) Gecko/20100101 Firefox/114.0"
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/514.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.24",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "referer": "https://www.99acres.com/",
+    "sec-fetch-site": "same-origin",
+    "authority": "www.99acres.com"
   },
   "params": {
     "page": "2",
