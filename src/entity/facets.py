@@ -31,5 +31,6 @@ class FacetsEntity(BaseModel):
         data = [i.model_dump() for i in getattr(self, attr)]
 
         df = DataFrame(data).drop_duplicates()
-        df['id'] = df['id'].str.zfill(3).sort_values()
+        df['id'] = df['id'].str.zfill(3)
+        df.sort_values(by='id', inplace=True)
         return df
