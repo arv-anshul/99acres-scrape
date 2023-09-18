@@ -37,7 +37,7 @@ async def fetch_response(
     **kwargs,
 ) -> Acres99Dict:
     try:
-        async with session.get(**kwargs) as r:
+        async with session.get(**kwargs, timeout=3) as r:
             msg = 'Status[%s]: %s' % (r.status, r.url)
             logger.info(msg)
 
