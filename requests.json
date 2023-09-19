@@ -16,6 +16,8 @@
     "page": "2",
     "page_size": "25",
     "platform": "DESKTOP",
+    "perference": "R,S",
+    "property_type": "1,2,3,4",
     "city": "12"
   }
 }
