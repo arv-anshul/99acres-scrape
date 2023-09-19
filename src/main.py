@@ -1,8 +1,12 @@
 import asyncio
+import json
+
+from pydantic import ValidationError
 
 from src.components import convert, fetch
 from src.database.operation import DataFrameOperations, DFPath
 from src.entity import Acres99
+from src.utils import ERRORED_DATA_PATH
 
 PAGE_NUMS = range(1, 20)
 PROP_PER_PAGE = 500
@@ -15,7 +19,14 @@ async def export_srp_df(
 ) -> None:
     responses = await fetch.fetch_all_responses(list(page_nums), prop_per_page, city_id=city_id)
     data = await convert.concat_responses(responses)
-    acres99 = Acres99(**data)
+
+    try:
+        acres99 = Acres99(**data)
+    except ValidationError as e:
+        with open(ERRORED_DATA_PATH, 'w') as f:
+            json.dump(data, f)
+
+        raise e
 
     df_op = DataFrameOperations(acres99)
 
