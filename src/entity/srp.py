@@ -48,11 +48,10 @@ class SRPEntity(BaseModel):
     location: Location
     BALCONY_NUM: Optional[str] = None
     FLOOR_NUM: Optional[str] = None
-    CARPET_SQFT: Optional[int] = None
-    SUPERBUILTUP_SQFT: Optional[int] = None
-    BUILTUP_SQFT: Optional[int] = None
-    SUPER_AREA: Optional[int] = None
-    SUPERAREA_UNIT: Optional[str] = None
+    CARPET_SQFT: Optional[str] = None
+    SUPERBUILTUP_SQFT: Optional[str] = None
+    BUILTUP_SQFT: Optional[str] = None
+    SUPER_SQFT: Optional[str] = None
 
     @property
     def get_attrs(self) -> list[str]:
