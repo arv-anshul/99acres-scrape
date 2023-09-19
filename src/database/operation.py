@@ -40,12 +40,10 @@ class DataFrameOperations:
             csv_data = df.to_csv(index=False, header=True)
             await f.write(csv_data)
 
-    @staticmethod
-    async def drop_duplicates(path: Path) -> None:
-        df = await asyncio.to_thread(pd.read_csv, path)
-        logger.warning('Drop %s rows from "%s"', df.duplicated().sum(), path)
-        df = df.drop_duplicates(ignore_index=True)
-        await DataFrameOperations.export_df_to_csv(df, path)
+    async def _drop_duplicates(self, df: pd.DataFrame) -> pd.DataFrame:
+        logger.warning('Drop %s rows.', df.duplicated(['PROP_ID']).sum())
+        df = df.drop_duplicates(['PROP_ID'], keep='last')
+        return df
 
     async def export_df(self, df: DataFrame, path: Path) -> None:
         if not path.exists():
@@ -53,6 +51,7 @@ class DataFrameOperations:
         else:
             df = await self.__extend_df(df, path)
 
+        df = await self._drop_duplicates(df)
         await self.export_df_to_csv(df, path)
 
     async def export_facets_df(self, dir_path: Path):

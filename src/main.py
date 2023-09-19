@@ -31,7 +31,6 @@ async def export_srp_df(
     df_op = DataFrameOperations(acres99)
 
     await df_op.export_df(await acres99.to_df('srp'), DFPath.srp)
-    await DataFrameOperations.drop_duplicates(DFPath.srp)
 
 
 async def main():
