@@ -1,7 +1,7 @@
-from typing import Any, TypedDict
+from typing import TypedDict
 
 
 class Acres99Dict(TypedDict):
-    facets: Any
-    srp: Any
-    projects: Any
+    facets: dict
+    srp: list[dict]
+    projects: list[dict]

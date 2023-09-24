@@ -49,3 +49,13 @@ async def concat_responses(responses: list[Acres99Dict]) -> Acres99Dict:
         logger.info(f'Length after concatenated {i}: {len(rv[i])}')
 
     return rv
+
+
+async def filter_batch_response(responses: list[dict]) -> Acres99Dict:
+    rv = Acres99Dict(facets=responses[0]['facets'], srp=[], projects=[])
+
+    for i in responses:
+        srp, projects = await separate_projects_srp_entity(i['properties'])
+        rv['srp'].extend(srp)
+        rv['projects'].extend(projects)
+    return rv
