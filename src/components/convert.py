@@ -58,4 +58,8 @@ async def filter_batch_response(responses: list[dict]) -> Acres99Dict:
         srp, projects = await separate_projects_srp_entity(i['properties'])
         rv['srp'].extend(srp)
         rv['projects'].extend(projects)
+
+    for i in rv.keys():
+        logger.info(f'After gathering {i}: {len(rv[i])}')
+
     return rv
