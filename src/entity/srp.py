@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Optional
 
 from pydantic import BaseModel
@@ -52,7 +50,3 @@ class SRPEntity(BaseModel):
     SUPERBUILTUP_SQFT: Optional[str] = None
     BUILTUP_SQFT: Optional[str] = None
     SUPER_SQFT: Optional[str] = None
-
-    @property
-    def get_attrs(self) -> list[str]:
-        return list(self.__dict__.keys())

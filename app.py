@@ -2,7 +2,6 @@ import asyncio
 import json
 from pathlib import Path
 
-import pandas as pd
 import streamlit as st
 from pydantic import ValidationError
 
@@ -53,7 +52,7 @@ if not form_submitted:
         msg.error('Please delete the previous scrapped data.')
         st.download_button(
             label='Download Previous Scrapped Data',
-            data=pd.read_csv(DFPath.srp).to_csv(index=False),
+            data=DFPath.srp.read_text(),
             file_name='real_estate_previous_data.csv',
             mime='.csv',
             on_click=delete_previous_data,
@@ -70,17 +69,16 @@ if not form_submitted:
 
     # Errored JSON data to download
     if ERRORED_DATA_PATH.exists():
-        with open(ERRORED_DATA_PATH, 'r') as f:
-            st.download_button(
-                '**Download Validation Errored Data**',
-                data=f,
-                file_name=ERRORED_DATA_PATH.name,
-                mime=ERRORED_DATA_PATH.suffix,
-                on_click=delete_previous_data,
-                args=(ERRORED_DATA_PATH,),
-                type='primary',
-                use_container_width=True,
-            )
+        st.download_button(
+            '**Download Validation Errored Data**',
+            data=ERRORED_DATA_PATH.read_text(),
+            file_name=ERRORED_DATA_PATH.name,
+            mime=ERRORED_DATA_PATH.suffix,
+            on_click=delete_previous_data,
+            args=(ERRORED_DATA_PATH,),
+            type='primary',
+            use_container_width=True,
+        )
 
     st.stop()
 
@@ -100,7 +98,7 @@ except ValueError as e:
 
 with st.spinner():
     try:
-        asyncio.run(export_srp_df(page_nums, int(prop_per_page), int(city_id)))
+        asyncio.run(export_srp_df(page_nums, int(prop_per_page), int(city_id)))  # type: ignore
     except ValidationError as e:
         msg.info(
             "You city's data contains some validation error. You have to work with this data.",
@@ -109,25 +107,24 @@ with st.spinner():
 
         # Errored JSON data to download
         if ERRORED_DATA_PATH.exists():
-            with open(ERRORED_DATA_PATH, 'r') as f:
-                st.download_button(
-                    '**Download Validation Errored Data**',
-                    data=f,
-                    file_name=ERRORED_DATA_PATH.name,
-                    mime=ERRORED_DATA_PATH.suffix,
-                    on_click=delete_previous_data,
-                    args=(ERRORED_DATA_PATH,),
-                    type='primary',
-                    use_container_width=True,
-                )
+            st.download_button(
+                '**Download Validation Errored Data**',
+                data=ERRORED_DATA_PATH.read_text(),
+                file_name=ERRORED_DATA_PATH.name,
+                mime=ERRORED_DATA_PATH.suffix,
+                on_click=delete_previous_data,
+                args=(ERRORED_DATA_PATH,),
+                type='primary',
+                use_container_width=True,
+            )
 
         st.exception(e)
         st.stop()
 
 if st.download_button(
     label='Download Scrapped Data',
-    data=pd.read_csv(DFPath.srp).to_csv(index=False),
-    file_name=f'real_estate_{city_with_id[city_id]}.csv',
+    data=DFPath.srp.read_text(),
+    file_name=f'real_estate_{city_with_id[city_id]}.csv',  # type: ignore
     mime='.csv',
     type='primary',
     use_container_width=True,
