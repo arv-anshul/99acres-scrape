@@ -1,5 +1,6 @@
 import asyncio
 import json
+from typing import Any
 
 from pydantic import ValidationError
 
@@ -18,19 +19,17 @@ async def export_srp_df(
     city_id: int | None = None,
 ) -> None:
     responses = await fetch.fetch_all_responses(list(page_nums), prop_per_page, city_id=city_id)
-    data = await convert.concat_responses(responses)
+    data: Any = await convert.filter_batch_response(responses)
 
     try:
         acres99 = Acres99(**data)
     except ValidationError as e:
         with open(ERRORED_DATA_PATH, 'w') as f:
             json.dump(data, f)
-
         raise e
-
-    df_op = DataFrameOperations(acres99)
-
-    await df_op.export_df(await acres99.to_df('srp'), DFPath.srp)
+    else:
+        df_op = DataFrameOperations(acres99)
+        await df_op.export_df(await acres99.to_df('srp'), DFPath.srp)
 
 
 async def main():

@@ -19,6 +19,12 @@ class DFPath(NamedTuple):
     facets_dir = Path('data/facets')
 
 
+async def drop_duplicates(df: pd.DataFrame) -> pd.DataFrame:
+    logger.warning('Drop %s rows.', df.duplicated(['PROP_ID']).sum())
+    df = df.drop_duplicates(['PROP_ID'], keep='last')
+    return df
+
+
 class DataFrameOperations:
     def __init__(self, data: Acres99):
         self.data = data
@@ -40,18 +46,13 @@ class DataFrameOperations:
             csv_data = df.to_csv(index=False, header=True)
             await f.write(csv_data)
 
-    async def _drop_duplicates(self, df: pd.DataFrame) -> pd.DataFrame:
-        logger.warning('Drop %s rows.', df.duplicated(['PROP_ID']).sum())
-        df = df.drop_duplicates(['PROP_ID'], keep='last')
-        return df
-
     async def export_df(self, df: DataFrame, path: Path) -> None:
         if not path.exists():
             logger.warning(f'"{path}" CSV file not exists.')
         else:
             df = await self.__extend_df(df, path)
 
-        df = await self._drop_duplicates(df)
+        df = await drop_duplicates(df)
         await self.export_df_to_csv(df, path)
 
     async def export_facets_df(self, dir_path: Path):

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import List, Optional
 
 from pydantic import BaseModel
@@ -95,7 +93,3 @@ class ProjectEntity(BaseModel):
     entityType: str
     configSummary: ConfigSummary
     description: Optional[Description] = None
-
-    @property
-    def get_attrs(self) -> list[str]:
-        return list(self.__dict__.keys())
