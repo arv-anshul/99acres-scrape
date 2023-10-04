@@ -1,3 +1,4 @@
+import asyncio
 import json
 from pathlib import Path
 from typing import Any
@@ -72,5 +73,6 @@ async def fetch_all_responses(
         for page_num in page_nums:
             kwargs['params'] = update_url_params(kwargs['params'], page_num, prop_per_page)
             responses.append(await fetch_response(session, **kwargs))
+            await asyncio.sleep(0.03)
 
     return responses
