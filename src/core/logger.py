@@ -10,14 +10,12 @@ def get_logger(logger_name: str) -> logging.Logger:
     :returns: logging.Logger
     """
     logger = logging.getLogger(logger_name)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
 
-    fp = Path(f'logs/{dt.now():%d%m%y_%H}.log')
+    fp = Path(f'logs/{dt.now():%d%m%y_%H%M}.log')
     fp.parent.mkdir(parents=True, exist_ok=True)
 
-    formatter = logging.Formatter(
-        "[%(asctime)s]:%(levelname)s - [%(lineno)d]:%(name)s - %(message)s"
-    )
+    formatter = logging.Formatter("[%(asctime)s]:%(levelname)s:[%(lineno)d]:%(name)s - %(message)s")
 
     file_handler = logging.FileHandler(fp)
     file_handler.setFormatter(formatter)
