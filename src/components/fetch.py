@@ -9,13 +9,17 @@ from src.core.logger import get_logger
 
 logger = get_logger(__name__)
 
+BASE_REQUESTS_PATH = Path('base.requests.json')
 REQUESTS_PATH = Path('requests.json')
 
 
 def get_requests_json() -> dict[str, Any]:
-    if not REQUESTS_PATH.exists():
-        raise FileNotFoundError(f'No `requests.json` file exists. Make one at "{REQUESTS_PATH}".')
-    return json.load(open(REQUESTS_PATH))
+    if REQUESTS_PATH.exists():
+        with REQUESTS_PATH.open() as f:
+            return json.load(f)
+
+    with BASE_REQUESTS_PATH.open() as f:
+        return json.load(f)
 
 
 def update_url_params(
