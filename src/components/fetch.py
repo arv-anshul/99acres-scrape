@@ -38,21 +38,15 @@ async def fetch_response(
     session: httpx.AsyncClient,
     **kwargs,
 ) -> dict:
-    try:
-        r = await session.get(**kwargs, timeout=3)
-        msg = 'Status[%s]: %s' % (r.status_code, r.url)
-        logger.info(msg)
+    r = await session.get(**kwargs, timeout=3)
+    msg = f'[{r.status_code}]:{r.url}'
+    logger.info(msg)
 
-        if r.status_code > 200:
-            logger.exception(msg)
-            raise httpx.HTTPStatusError(msg, request=r.request, response=r)
+    if r.status_code > 200:
+        logger.exception(msg)
+        r.raise_for_status()
 
-    except httpx.HTTPStatusError as e:
-        logger.exception(f'Error fetching response: {e}')
-        raise e
-
-    else:
-        return r.json()
+    return r.json()
 
 
 async def fetch_all_responses(
@@ -76,7 +70,14 @@ async def fetch_all_responses(
         responses = []
         for page_num in page_nums:
             kwargs['params'] = update_url_params(kwargs['params'], page_num, prop_per_page)
-            responses.append(await fetch_response(session, **kwargs))
+
+            try:
+                responses.append(await fetch_response(session, **kwargs))
+            except Exception as e:
+                logger.exception(e)
+                print(f'**ERROR**: {e}')
+                return responses
+
             await asyncio.sleep(0.03)
 
     return responses
