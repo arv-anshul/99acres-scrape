@@ -118,6 +118,9 @@ async def fetch_raw_data():
 with st.spinner():
     if want_raw_data:
         df = asyncio.run(fetch_raw_data())
+        if DFPath.srp.exists():
+            old_df = pd.read_csv(DFPath.srp)
+            df = pd.concat([old_df, df])
         df.to_csv(DFPath.srp, index=False)
     else:
         try:
