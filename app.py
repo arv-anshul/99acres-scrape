@@ -46,6 +46,12 @@ with st.form('scrape_99acres'):
         format_func=lambda x: city_with_id[x],
     )
 
+    want_whole_data = st.checkbox(
+        '📦 Fetch whole data!',
+        value=False,
+        help='You will get all the fetched data without filtering.',
+    )
+
     form_submitted = st.form_submit_button(use_container_width=True)
 
 if not form_submitted:
@@ -111,9 +117,12 @@ async def store_df(status: StatusContainer):
     status.write('😎 :orange[Data has been scrapped!]')
     status.write(f'🧩 :green[Shape of scrapped data:] **{df.shape}**')
 
-    status.write('🗑️ Filter the data and keep only required columns.')
-    df = df[list(set(df.columns) & set(SRP_DATA_COLUMNS))]
-    status.write(f'🧩 :green[Shape after filtering:] **{df.shape}**')
+    if not want_whole_data:
+        status.write('🗑️ Filter the data and keep only required columns.')
+        df = df[list(set(df.columns) & set(SRP_DATA_COLUMNS))]
+        status.write(f'🧩 :green[Shape after filtering:] **{df.shape}**')
+    else:
+        status.write('❌ :red[Filtering on fetched data not applied.]')
 
     df = await merge_existing_data(df)
     status.write(f'🥳 :violet[We have total scrapped data shape:] **{df.shape}**')
