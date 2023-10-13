@@ -1,7 +1,3 @@
-from pathlib import Path
-
 request_headers = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:101.0) Gecko/20100101 Firefox/114.0"
+    "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
 }
-
-ERRORED_DATA_PATH = Path('data/data_with_validation_error.json')
