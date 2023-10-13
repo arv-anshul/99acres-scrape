@@ -11,6 +11,7 @@ from src.core.logger import get_logger
 from src.database import operation
 from src.database.city_w_id import CITY_W_ID_PATH, save_city_w_id_dict
 from src.database.operation import DFPath
+from src.utils import SRP_DATA_COLUMNS
 
 st.set_page_config('Scrape 99Acres', '🏠')
 st_msg = st.container()
@@ -109,6 +110,10 @@ async def store_df(status: StatusContainer):
 
     status.write('😎 :orange[Data has been scrapped!]')
     status.write(f'🧩 :green[Shape of scrapped data:] **{df.shape}**')
+
+    status.write('🗑️ Filter the data and keep only required columns.')
+    df = df[list(set(df.columns) & set(SRP_DATA_COLUMNS))]
+    status.write(f'🧩 :green[Shape after filtering:] **{df.shape}**')
 
     df = await merge_existing_data(df)
     status.write(f'🥳 :violet[We have total scrapped data shape:] **{df.shape}**')
