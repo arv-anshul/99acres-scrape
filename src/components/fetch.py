@@ -21,11 +21,7 @@ def get_requests_json() -> dict[str, Any]:
         return json.load(f)
 
 
-def update_url_params(
-    params_dict: dict,
-    page_num: int,
-    prop_per_page: int,
-) -> dict[str, str]:
+def __update_url_params(params_dict: dict, page_num: int, prop_per_page: int) -> dict:
     if prop_per_page > 800:
         raise ValueError(f'page_size <= {prop_per_page}')
     params_dict['page'] = str(page_num)
@@ -33,11 +29,8 @@ def update_url_params(
     return params_dict
 
 
-async def fetch_response(
-    session: httpx.AsyncClient,
-    **kwargs,
-) -> dict:
-    r = await session.get(**kwargs, timeout=3)
+async def __fetch_response(session: httpx.AsyncClient, **get_requests_kwargs) -> dict:
+    r = await session.get(**get_requests_kwargs, timeout=3)
     msg = f'[{r.status_code}]:{r.url}'
     logger.info(msg)
 
@@ -49,29 +42,21 @@ async def fetch_response(
 
 
 async def fetch_all_responses(
-    page_nums: list[int],
-    prop_per_page: int,
-    city_id: int | None = None,
-    **kwargs,
+    page_nums: list[int], prop_per_page: int, city_id: int, **get_requests_kwargs
 ) -> list[dict]:
-    """
-    :page_num (int): Page number.
-    :page_size (int): No. of properties data.
-
-    :returns: List of aiohttp.ClientResponse
-    """
-    if len(kwargs) == 0:
-        kwargs = get_requests_json()
-    if city_id:
-        kwargs['params']['city'] = city_id
+    if len(get_requests_kwargs) == 0:
+        get_requests_kwargs = get_requests_json()
+    get_requests_kwargs['params']['city'] = city_id
 
     async with httpx.AsyncClient() as session:
         responses = []
         for page_num in page_nums:
-            kwargs['params'] = update_url_params(kwargs['params'], page_num, prop_per_page)
+            get_requests_kwargs['params'] = __update_url_params(
+                get_requests_kwargs['params'], page_num, prop_per_page
+            )
 
             try:
-                responses.append(await fetch_response(session, **kwargs))
+                responses.append(await __fetch_response(session, **get_requests_kwargs))
             except Exception as e:
                 logger.exception(e)
                 print(f'**ERROR**: {e}')

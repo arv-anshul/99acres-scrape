@@ -1,18 +1,10 @@
-"""
-Convert the Response JSON into Acres99Dict type.
-"""
-
-from typing import Any
-
 from src.logger import get_logger
 from src.typing import Acres99Dict
 
 logger = get_logger(__name__)
 
 
-async def separate_projects_srp_entity(
-    items: list[dict[str, Any]],
-) -> tuple[list, list]:
+async def separate_projects_srp_entity(items: list[dict]) -> tuple[list, list]:
     """Returns: (srp, project)"""
     srp, projects = [], []
 
@@ -34,6 +26,6 @@ async def filter_batch_response(responses: list[dict]) -> Acres99Dict:
         rv['projects'].extend(projects)
 
     for i in rv.keys():
-        logger.info(f'After gathering {i}: {len(rv[i])}')
+        logger.info(f'Shape of data after gathering {i}: {len(rv[i])}')
 
     return rv
