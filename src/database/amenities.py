@@ -1,29 +1,18 @@
-from typing import Any
+from pathlib import Path
 
 import pandas as pd
-import requests
 
 from src import utils
 from src.logger import get_logger
 
-amenities_fp = 'data/facets/AMENITIES.csv'
+amenities_fp = Path('data/facets/AMENITIES.csv')
 
 logger = get_logger(__name__)
 
 
-def fetch_amenities_data() -> dict[str, Any]:
-    r = requests.get(
-        url='https://www.99acres.com/api-aggregator/static-attributes?includedFields=',
-        headers=utils.request_headers,
-    )
-    logger.info(f"Status[{r.status_code}]:{r.url}")
-
-    r.raise_for_status()
-    return r.json()['propertyAmenity']
-
-
 def amenities_to_csv() -> None:
-    amenities = fetch_amenities_data()
+    url = 'https://www.99acres.com/api-aggregator/static-attributes?includedFields='
+    amenities = utils.get_request(url)['propertyAmenity']
 
     df = pd.DataFrame([j for i in amenities for j in amenities[i]['default']])
     df.sort_values(by=['category', 'id'], inplace=True)

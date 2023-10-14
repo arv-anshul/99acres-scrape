@@ -1,13 +1,14 @@
 from pathlib import Path
-from typing import NamedTuple
+from typing import Any, NamedTuple
 
+import httpx
 import pandas as pd
 
 from src.logger import get_logger
 
 logger = get_logger(__name__)
 
-request_headers = {
+REQUEST_HEADERS = {
     "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
 }
 
@@ -92,3 +93,10 @@ class DFPath(NamedTuple):
     FACETS_DIR = Path('data/facets')
     PROJECTS = Path('data/projects.csv')
     SRP = Path('data/srp.csv')
+
+
+def get_request(url: str) -> dict[str, Any]:
+    r = httpx.get(url=url, headers=REQUEST_HEADERS)
+    logger.info(f"[{r.status_code}]:{r.url}")
+    r.raise_for_status()
+    return r.json()
