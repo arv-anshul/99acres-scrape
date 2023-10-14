@@ -1,4 +1,3 @@
-import asyncio
 import json
 from pathlib import Path
 from typing import Any
@@ -77,7 +76,5 @@ async def fetch_all_responses(
                 logger.exception(e)
                 print(f'**ERROR**: {e}')
                 return responses
-
-            await asyncio.sleep(0.03)
 
     return responses
