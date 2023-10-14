@@ -25,32 +25,6 @@ async def separate_projects_srp_entity(
     return srp, projects
 
 
-async def convert_to_acres99_dict(d: dict) -> Acres99Dict:
-    srp, projects = await separate_projects_srp_entity(d['properties'])
-    result = Acres99Dict(facets=d['facets'], srp=srp, projects=projects)
-
-    for i in result.keys():
-        logger.info(f'{i}: {len(result[i])}')
-
-    return result
-
-
-async def concat_responses(responses: list[Acres99Dict]) -> Acres99Dict:
-    if not responses:
-        raise ValueError('Empty responses passed.')
-
-    rv = Acres99Dict(
-        facets=responses[0]['facets'],
-        srp=[j for i in responses for j in i['srp']],
-        projects=[j for i in responses for j in i['projects']],
-    )
-
-    for i in rv.keys():
-        logger.info(f'Length after concatenated {i}: {len(rv[i])}')
-
-    return rv
-
-
 async def filter_batch_response(responses: list[dict]) -> Acres99Dict:
     rv = Acres99Dict(facets=responses[0]['facets'], srp=[], projects=[])
 
