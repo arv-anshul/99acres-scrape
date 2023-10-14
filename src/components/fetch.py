@@ -3,8 +3,10 @@ from pathlib import Path
 from typing import Any
 
 import httpx
+from streamlit.elements.lib.mutable_status_container import StatusContainer
 
 from src.logger import get_logger
+from src.utils import progress_bar_nums
 
 logger = get_logger(__name__)
 
@@ -42,20 +44,36 @@ async def __fetch_response(session: httpx.AsyncClient, **get_requests_kwargs) ->
 
 
 async def fetch_all_responses(
-    page_nums: list[int], prop_per_page: int, city_id: int, **get_requests_kwargs
+    page_nums: list[int],
+    prop_per_page: int,
+    city_id: int,
+    *,
+    status: StatusContainer,
+    **get_requests_kwargs,
 ) -> list[dict]:
     if len(get_requests_kwargs) == 0:
         get_requests_kwargs = get_requests_json()
     get_requests_kwargs['params']['city'] = city_id
 
+    _ = progress_bar_nums(page_nums)
+    progress = status.progress(
+        0,
+        f'🪝 Fetching Data of Page {page_nums[0]}/{page_nums[-1]}. '
+        f'(Total {len(page_nums)} Pages)',
+    )
     async with httpx.AsyncClient() as session:
         responses = []
-        for page_num in page_nums:
+        for i, page_num in zip(_, page_nums):
             get_requests_kwargs['params'] = __update_url_params(
                 get_requests_kwargs['params'], page_num, prop_per_page
             )
 
             try:
+                progress.progress(
+                    i,
+                    f'🪝 Fetching Data of Page {page_num}/{page_nums[-1]}. '
+                    f'(Total {len(page_nums)} Pages)',
+                )
                 responses.append(await __fetch_response(session, **get_requests_kwargs))
             except Exception as e:
                 logger.exception(e)

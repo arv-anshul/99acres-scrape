@@ -15,7 +15,6 @@ if REQUESTS_PATH.exists():
     st.button(
         '**🔥 Delete existing cURL command 🔥**',
         on_click=REQUESTS_PATH.unlink,
-        type='primary',
         use_container_width=True,
     )
 

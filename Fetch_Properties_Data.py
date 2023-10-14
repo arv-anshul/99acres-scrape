@@ -1,6 +1,5 @@
 import asyncio
 import json
-from pathlib import Path
 
 import pandas as pd
 import streamlit as st
@@ -12,9 +11,11 @@ from src.database.city_w_id import CITY_W_ID_PATH, save_city_w_id_dict
 from src.logger import get_logger
 from src.utils import SRP_DATA_COLUMNS, DFPath
 
-st.set_page_config('Scrape 99Acres', '🏠')
+st.set_page_config('Fetch Properties Data', '🏠', 'wide')
 st_msg = st.container()
 logger = get_logger(__name__)
+
+st.header(':red[🏠 Fetch Real Estate Properties Data from] :blue[99acres.com]')
 
 if not CITY_W_ID_PATH.exists():
     save_city_w_id_dict()
@@ -23,58 +24,50 @@ with open(CITY_W_ID_PATH) as f:
     city_with_id: dict[str, str] = json.load(f)
 
 
-def delete_previous_data(path: Path) -> None:
-    if path.exists():
-        path.unlink()
-
-
-with st.form('scrape_99acres'):
-    st.title('Scrape 99Acres.com')
-
+with st.form('fetch_data_from_99acres'):
     l, r = st.columns(2)
     from_page = l.number_input('From Page', min_value=1, value=1, format='%d')
     to_page = r.number_input('To Page', min_value=1, value=2, format='%d')
 
     prop_per_page = st.number_input(
-        'Property per page', min_value=25, max_value=100, value=50, format='%d'
+        'Properties per Page',
+        min_value=25,
+        max_value=100,
+        value=50,
+        format='%d',
+        help='No. of properties per page! (Max. 50)',
     )
 
     city_id = st.selectbox(
-        'Select City',
+        '🌇 **Select City**',
         options=city_with_id.keys(),
         format_func=lambda x: city_with_id[x],
+        help='These cities are listed on 99acres.com',
     )
 
     want_whole_data = st.checkbox(
-        '📦 Fetch whole data!',
+        '📦 Fetch Whole Data!',
         value=False,
         help='You will get all the fetched data without filtering.',
     )
 
-    form_submitted = st.form_submit_button(use_container_width=True)
+    form_submitted = st.form_submit_button(use_container_width=True, type='primary')
 
 if not form_submitted:
-    st.subheader('Scrape 99acres.com in one click. Get data of any city listed on the website.')
-
     if DFPath.SRP.exists():
-        st_msg.error('Please delete the previous scrapped data.')
         st.download_button(
-            label='Download Previous Scrapped Data',
+            label='🏡 :green[**Download Previous Scrapped Data**] 🏡',
             data=DFPath.SRP.read_text(),
             file_name='real_estate_previous_data.csv',
             mime='.csv',
-            on_click=delete_previous_data,
-            args=(DFPath.SRP,),
-            type='primary',
+            on_click=DFPath.SRP.unlink,
             use_container_width=True,
         )
         st.button(
-            'Delete Previous Data',
-            on_click=delete_previous_data,
-            args=(DFPath.SRP,),
+            ':red[**Delete Previous Data**]',
+            on_click=DFPath.SRP.unlink,
             use_container_width=True,
         )
-
     st.stop()
 
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
@@ -94,7 +87,7 @@ if not city_id.isnumeric():
 
 async def fetch_raw_data():
     responses = await fetch.fetch_all_responses(
-        list(page_nums), int(prop_per_page), city_id=int(city_id)
+        list(page_nums), int(prop_per_page), city_id=int(city_id), status=status
     )
     data = await convert.filter_batch_response(responses)
     return pd.DataFrame(data['srp'])
@@ -105,6 +98,9 @@ async def merge_existing_data(df: pd.DataFrame) -> pd.DataFrame:
         old_df = pd.read_csv(DFPath.SRP)
         status.write(f'🗂️ :orange[Shape of stored data:] **{old_df.shape}**')
         df = pd.concat([old_df, df])
+
+    if _ := df.duplicated('PROP_ID').sum():
+        status.write(f"🔥 :red[Dropping **{_}** duplicated data.]")
 
     df = await utils.drop_duplicates(df)
     return df

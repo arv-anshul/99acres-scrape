@@ -100,3 +100,9 @@ def get_request(url: str) -> dict[str, Any]:
     logger.info(f"[{r.status_code}]:{r.url}")
     r.raise_for_status()
     return r.json()
+
+
+def progress_bar_nums(page_nums: list[int] | range):
+    n = len(page_nums)
+    for i in range(1, n + 1):
+        yield i * (1 / n)
