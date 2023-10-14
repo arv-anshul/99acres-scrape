@@ -1,3 +1,12 @@
+from pathlib import Path
+from typing import NamedTuple
+
+import pandas as pd
+
+from src.core.logger import get_logger
+
+logger = get_logger(__name__)
+
 request_headers = {
     "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
 }
@@ -71,3 +80,15 @@ SRP_DATA_COLUMNS = [
     'TRANSACT_TYPE',
     'xid',
 ]
+
+
+async def drop_duplicates(df: pd.DataFrame) -> pd.DataFrame:
+    logger.warning('Drop %s rows.', df.duplicated(['PROP_ID']).sum())
+    df = df.drop_duplicates(['PROP_ID'], keep='last')
+    return df
+
+
+class DFPath(NamedTuple):
+    FACETS_DIR = Path('data/facets')
+    PROJECTS = Path('data/projects.csv')
+    SRP = Path('data/srp.csv')
