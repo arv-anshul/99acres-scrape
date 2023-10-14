@@ -4,7 +4,7 @@ Convert the Response JSON into Acres99Dict type.
 
 from typing import Any
 
-from src.core.logger import get_logger
+from src.logger import get_logger
 from src.typing import Acres99Dict
 
 logger = get_logger(__name__)

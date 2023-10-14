@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 
 from src import utils
-from src.core.logger import get_logger
+from src.logger import get_logger
 
 amenities_fp = 'data/facets/AMENITIES.csv'
 

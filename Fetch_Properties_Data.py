@@ -8,8 +8,8 @@ from streamlit.elements.lib.mutable_status_container import StatusContainer
 
 from src import utils
 from src.components import convert, fetch
-from src.core.logger import get_logger
 from src.database.city_w_id import CITY_W_ID_PATH, save_city_w_id_dict
+from src.logger import get_logger
 from src.utils import SRP_DATA_COLUMNS, DFPath
 
 st.set_page_config('Scrape 99Acres', '🏠')
