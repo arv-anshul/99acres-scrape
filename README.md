@@ -10,6 +10,10 @@ I am working on a real estate project. So I need real-time data for that so I wr
 
 Check out my Data Analysis on the scrapped data [here](https://github.com/arv-anshul/campusx-project-notebooks).
 
+### Documentation
+
+Documentation for this project is available in [🗒️ wiki](https://github.com/arv-anshul/99acres-scrape/wiki) section.
+
 ### Techs
 
 1. Python>=3.11
