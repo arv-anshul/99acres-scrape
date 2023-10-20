@@ -2,7 +2,7 @@
 
 SHELL := /bin/bash
 
-STREAMLIT_APP = Fetch_Properties_Data.py
+STREAMLIT_APP = Introduction.py
 
 streamlit: $(STREAMLIT_APP)  ## Run the streamlit app
 	streamlit run $<
