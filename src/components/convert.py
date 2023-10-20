@@ -9,7 +9,7 @@ async def separate_projects_srp_entity(items: list[dict]) -> tuple[list, list]:
     srp, projects = [], []
 
     for item in items:
-        if 'entityType' in item.keys():
+        if "entityType" in item.keys():
             projects.append(item)
         else:
             srp.append(item)
@@ -18,14 +18,14 @@ async def separate_projects_srp_entity(items: list[dict]) -> tuple[list, list]:
 
 
 async def filter_batch_response(responses: list[dict]) -> Acres99Dict:
-    rv = Acres99Dict(facets=responses[0]['facets'], srp=[], projects=[])
+    rv = Acres99Dict(facets=responses[0]["facets"], srp=[], projects=[])
 
     for i in responses:
-        srp, projects = await separate_projects_srp_entity(i['properties'])
-        rv['srp'].extend(srp)
-        rv['projects'].extend(projects)
+        srp, projects = await separate_projects_srp_entity(i["properties"])
+        rv["srp"].extend(srp)
+        rv["projects"].extend(projects)
 
     for i in rv.keys():
-        logger.info(f'Shape of data after gathering {i}: {len(rv[i])}')
+        logger.info(f"Shape of data after gathering {i}: {len(rv[i])}")
 
     return rv

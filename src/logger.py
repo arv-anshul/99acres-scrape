@@ -10,17 +10,14 @@ def __configure_logger(logger: logging.Logger, file_path: Path):
 
     file_path.parent.mkdir(exist_ok=True)
     file_handler = logging.FileHandler(file_path)
-    formatter = logging.Formatter("[%(asctime)s]:%(levelname)s:%(lineno)d:%(name)s:%(message)s")
+    formatter = logging.Formatter(
+        "[%(asctime)s]:%(levelname)s:%(lineno)d:%(name)s:%(message)s"
+    )
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
 
 def get_logger(logger_name: str) -> logging.Logger:
-    """
-    :param logger_name (str): __name__
-
-    :returns: logging.Logger
-    """
     # Check if the logger instance already exists
     if logger_name in logger_instances:
         return logger_instances[logger_name]

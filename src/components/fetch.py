@@ -10,8 +10,8 @@ from src.utils import progress_bar_nums
 
 logger = get_logger(__name__)
 
-BASE_REQUESTS_PATH = Path('base.requests.json')
-REQUESTS_PATH = Path('requests.json')
+BASE_REQUESTS_PATH = Path("base.requests.json")
+REQUESTS_PATH = Path("requests.json")
 
 
 def get_requests_json() -> dict[str, Any]:
@@ -25,15 +25,15 @@ def get_requests_json() -> dict[str, Any]:
 
 def __update_url_params(params_dict: dict, page_num: int, prop_per_page: int) -> dict:
     if prop_per_page > 800:
-        raise ValueError(f'page_size <= {prop_per_page}')
-    params_dict['page'] = str(page_num)
-    params_dict['page_size'] = str(prop_per_page)
+        raise ValueError(f"page_size <= {prop_per_page}")
+    params_dict["page"] = str(page_num)
+    params_dict["page_size"] = str(prop_per_page)
     return params_dict
 
 
 async def __fetch_response(session: httpx.AsyncClient, **get_requests_kwargs) -> dict:
     r = await session.get(**get_requests_kwargs, timeout=3)
-    msg = f'[{r.status_code}]:{r.url}'
+    msg = f"[{r.status_code}]:{r.url}"
     logger.info(msg)
 
     if r.status_code > 200:
@@ -53,31 +53,31 @@ async def fetch_all_responses(
 ) -> list[dict]:
     if len(get_requests_kwargs) == 0:
         get_requests_kwargs = get_requests_json()
-    get_requests_kwargs['params']['city'] = city_id
+    get_requests_kwargs["params"]["city"] = city_id
 
     _ = progress_bar_nums(page_nums)
     progress = status.progress(
         0,
-        f'🪝 Fetching Data of Page {page_nums[0]}/{page_nums[-1]}. '
-        f'(Total {len(page_nums)} Pages)',
+        f"🪝 Fetching Data of Page {page_nums[0]}/{page_nums[-1]}. "
+        f"(Total {len(page_nums)} Pages)",
     )
     async with httpx.AsyncClient() as session:
         responses = []
         for i, page_num in zip(_, page_nums):
-            get_requests_kwargs['params'] = __update_url_params(
-                get_requests_kwargs['params'], page_num, prop_per_page
+            get_requests_kwargs["params"] = __update_url_params(
+                get_requests_kwargs["params"], page_num, prop_per_page
             )
 
             try:
                 progress.progress(
-                    i,
-                    f'🪝 Fetching Data of Page {page_num}/{page_nums[-1]}. '
-                    f'(Total {len(page_nums)} Pages)',
+                    value=i,
+                    text=f"🪝 Fetching Data of Page {page_num}/{page_nums[-1]}. "
+                    f"(Total {len(page_nums)} Pages)",
                 )
                 responses.append(await __fetch_response(session, **get_requests_kwargs))
             except Exception as e:
                 logger.exception(e)
-                print(f'**ERROR**: {e}')
+                print(f"**ERROR**: {e}")
                 return responses
 
     return responses
