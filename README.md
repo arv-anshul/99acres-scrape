@@ -14,6 +14,8 @@ Check out my Data Analysis on the scrapped data [here](https://github.com/arv-an
 
 Documentation for this project is available in [🗒️ wiki](https://github.com/arv-anshul/99acres-scrape/wiki) section.
 
+In order to see the EDA process on the data fetched by this app goto [📁 campusx-project-notebooks](https://github.com/arv-anshul/campusx-project-notebooks).
+
 ### Techs
 
 1. Python>=3.11
