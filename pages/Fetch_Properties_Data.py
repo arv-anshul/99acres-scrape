@@ -6,7 +6,7 @@ import streamlit as st
 from streamlit.elements.lib.mutable_status_container import StatusContainer
 
 from src import utils
-from src.components import convert, fetch
+from src.components import fetch
 from src.database.city_w_id import CITY_W_ID_PATH, save_city_w_id_dict
 from src.logger import get_logger
 from src.utils import SRP_DATA_COLUMNS, DFPath
@@ -89,8 +89,9 @@ async def fetch_raw_data():
     responses = await fetch.fetch_all_responses(
         list(page_nums), int(prop_per_page), city_id=int(city_id), status=status
     )
-    data = await convert.filter_batch_response(responses)
-    return pd.DataFrame(data["srp"])
+    data = [j for i in responses for j in i["properties"] if "PROP_ID" in j.keys()]
+    logger.info(f"Shape of data after gathering SRP: {len(data)}")
+    return pd.DataFrame(data)
 
 
 async def merge_existing_data(df: pd.DataFrame) -> pd.DataFrame:
