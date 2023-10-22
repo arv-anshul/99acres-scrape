@@ -5,9 +5,8 @@ import pandas as pd
 import streamlit as st
 from streamlit.elements.lib.mutable_status_container import StatusContainer
 
-from src import utils
 from src.components import fetch
-from src.database.city_w_id import CITY_W_ID_PATH, save_city_w_id_dict
+from src.database.city_w_id import CITY_W_ID_PATH
 from src.logger import get_logger
 from src.utils import SRP_DATA_COLUMNS, DFPath
 
@@ -17,11 +16,8 @@ logger = get_logger(__name__)
 
 st.header(":red[🏠 Fetch Real Estate Properties Data from] :blue[99acres.com]")
 
-if not CITY_W_ID_PATH.exists():
-    save_city_w_id_dict()
-
 with open(CITY_W_ID_PATH) as f:
-    city_with_id: dict[str, str] = json.load(f)
+    CITY_W_ID: dict[str, str] = json.load(f)
 
 
 with st.form("fetch_data_from_99acres"):
@@ -40,8 +36,8 @@ with st.form("fetch_data_from_99acres"):
 
     city_id = st.selectbox(
         "🌇 **Select City**",
-        options=city_with_id.keys(),
-        format_func=lambda x: city_with_id[x],
+        options=CITY_W_ID.keys(),
+        format_func=lambda x: CITY_W_ID[x],
         help="These cities are listed on 99acres.com",
     )
 
@@ -103,7 +99,8 @@ async def merge_existing_data(df: pd.DataFrame) -> pd.DataFrame:
     if _ := df.duplicated("PROP_ID").sum():
         status.write(f"🔥 :red[Dropping **{_}** duplicated data.]")
 
-    df = await utils.drop_duplicates(df)
+    logger.warning("Drop %s rows.", df.duplicated(["PROP_ID"]).sum())
+    df = df.drop_duplicates(["PROP_ID"], keep="last")
     return df
 
 
@@ -130,7 +127,7 @@ async def store_df(status: StatusContainer):
 with st.status("🎉 Scrapping process starts!", expanded=True) as status:
     asyncio.run(store_df(status))
     status.update(
-        label=f"🥳 **We scrapped :red[{city_with_id[city_id]}] city properties data.**",
+        label=f"🥳 **We scrapped :red[{CITY_W_ID[city_id]}] city properties data.**",
         expanded=True,
         state="complete",
     )
@@ -139,7 +136,7 @@ with st.status("🎉 Scrapping process starts!", expanded=True) as status:
 if st.download_button(
     label="Download Scrapped Data",
     data=DFPath.SRP.read_text(),
-    file_name=f"real_estate_{city_with_id[city_id]}.csv",
+    file_name=f"real_estate_{CITY_W_ID[city_id]}.csv",
     mime=".csv",
     type="primary",
     use_container_width=True,

@@ -2,7 +2,6 @@ from pathlib import Path
 from typing import Any, NamedTuple
 
 import httpx
-import pandas as pd
 
 from src.logger import get_logger
 
@@ -81,12 +80,6 @@ SRP_DATA_COLUMNS = [
     "TRANSACT_TYPE",
     "xid",
 ]
-
-
-async def drop_duplicates(df: pd.DataFrame) -> pd.DataFrame:
-    logger.warning("Drop %s rows.", df.duplicated(["PROP_ID"]).sum())
-    df = df.drop_duplicates(["PROP_ID"], keep="last")
-    return df
 
 
 class DFPath(NamedTuple):

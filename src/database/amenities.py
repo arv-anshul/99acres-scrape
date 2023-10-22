@@ -5,7 +5,7 @@ import pandas as pd
 from src import utils
 from src.logger import get_logger
 
-amenities_fp = Path("data/facets/AMENITIES.csv")
+AMENITIES_PATH = Path("data/facets/AMENITIES.csv")
 
 logger = get_logger(__name__)
 
@@ -20,8 +20,8 @@ def amenities_to_csv() -> None:
     duplicated_idx = df[df["id"].duplicated()].index
     df.drop(columns=["url"], index=duplicated_idx, inplace=True)
 
-    df.to_csv(amenities_fp, index=False)
-    logger.info(f'Export: "{amenities_fp}"')
+    df.to_csv(AMENITIES_PATH, index=False)
+    logger.info(f'Export: "{AMENITIES_PATH}"')
 
 
 def main():
