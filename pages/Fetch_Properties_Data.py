@@ -90,6 +90,12 @@ async def fetch_raw_data():
     return pd.DataFrame(data)
 
 
+async def clean_raw_data(df: pd.DataFrame) -> pd.DataFrame:
+    if "DESCRIPTION" in df.columns:
+        df["DESCRIPTION"] = df["DESCRIPTION"].str.replace("\n", " ")
+    return df
+
+
 async def merge_existing_data(df: pd.DataFrame) -> pd.DataFrame:
     if DFPath.SRP.exists():
         old_df = pd.read_csv(DFPath.SRP)
@@ -106,12 +112,14 @@ async def merge_existing_data(df: pd.DataFrame) -> pd.DataFrame:
 
 async def store_df(status: StatusContainer):
     df = await fetch_raw_data()
-
     status.write("😎 :orange[Data has been scrapped!]")
     status.write(f"🧩 :green[Shape of scrapped data:] **{df.shape}**")
 
+    df = await clean_raw_data(df)
+    status.write("🧹 :orange[Data cleaning done!]")
+
     if not want_whole_data:
-        status.write("🗑️ Filter the data and keep only required columns.")
+        status.write("🗑️ :gray[Filtered the data to keep only required columns.]")
         df = df[list(set(df.columns) & set(SRP_DATA_COLUMNS))]
         status.write(f"🧩 :green[Shape after filtering:] **{df.shape}**")
     else:
