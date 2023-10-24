@@ -1,5 +1,6 @@
 import asyncio
 import json
+from warnings import filterwarnings
 
 import pandas as pd
 import streamlit as st
@@ -9,6 +10,8 @@ from src.components import fetch
 from src.database.city_w_id import CITY_W_ID_PATH
 from src.logger import get_logger
 from src.utils import SRP_DATA_COLUMNS, DFPath
+
+filterwarnings("ignore", category=pd.errors.DtypeWarning)
 
 st.set_page_config("Fetch Properties Data", "🏠", "wide")
 st_msg = st.container()
@@ -22,11 +25,11 @@ with open(CITY_W_ID_PATH) as f:
 
 with st.form("fetch_data_from_99acres"):
     l, r = st.columns(2)
-    from_page = l.number_input("From Page", min_value=1, value=1, format="%d")
-    to_page = r.number_input("To Page", min_value=1, value=2, format="%d")
+    from_page = l.number_input("📄 From Page", min_value=1, value=1, format="%d")
+    to_page = r.number_input("📄 To Page", min_value=1, value=2, format="%d")
 
     prop_per_page = st.number_input(
-        "Properties per Page",
+        "🏠 Properties per Page",
         min_value=25,
         max_value=100,
         value=50,
@@ -47,7 +50,9 @@ with st.form("fetch_data_from_99acres"):
         help="You will get all the fetched data without filtering.",
     )
 
-    form_submitted = st.form_submit_button(use_container_width=True, type="primary")
+    form_submitted = st.form_submit_button(
+        "**Fetch Properties Data**", use_container_width=True, type="primary"
+    )
 
 if not form_submitted:
     if DFPath.SRP.exists():
@@ -72,12 +77,18 @@ if not form_submitted:
 page_nums = range(int(from_page), int(to_page))
 
 if city_id is None:
-    st.exception(ValueError("Please select a proper city."))
+    st_msg.exception(ValueError("Please select a proper city."))
     st.stop()
     raise
 
 if not city_id.isnumeric():
-    st.exception(ValueError("Problem with City ID."))
+    st_msg.exception(ValueError("Problem with City ID."))
+    st.stop()
+
+if from_page > to_page:
+    st_msg.exception(
+        ValueError("📄 'From Page' field must be lesser than 'To Page' field.")
+    )
     st.stop()
 
 
