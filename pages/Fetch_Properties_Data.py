@@ -9,7 +9,13 @@ import pandas as pd
 import streamlit as st
 
 from src import fetch
-from src.constants import CITY_W_ID_PATH, SRP_COLUMNS_PATH, SRP_CSV_PATH
+from src.constants import (
+    CITY_W_ID_PATH,
+    REQUESTS_JSON_PATH,
+    SRP_COLUMNS_PATH,
+    SRP_CSV_PATH,
+)
+from src.errors import ResquestsJsonNotFoundError
 from src.logger import get_logger
 
 if TYPE_CHECKING:
@@ -22,6 +28,10 @@ st_msg = st.container()
 logger = get_logger(__name__)
 
 st.header(":red[🏠 Fetch Real Estate Properties Data from] :blue[99acres.com]")
+
+if not REQUESTS_JSON_PATH.exists():
+    st.error("First submit latest curl command in order to fetch data.")
+    st.switch_page("pages/Parse_curl_command.py")
 
 with CITY_W_ID_PATH.open() as f:
     CITY_W_ID: dict[str, str] = json.load(f)
@@ -97,9 +107,15 @@ if from_page > to_page:
 
 
 async def fetch_raw_data():
-    responses = await fetch.fetch_all_responses(
-        list(page_nums), int(prop_per_page), city_id=int(city_id), status=status
-    )
+    try:
+        responses = await fetch.fetch_all_responses(
+            list(page_nums), int(prop_per_page), city_id=int(city_id), status=status
+        )
+    except ResquestsJsonNotFoundError as e:
+        st_msg.error(str(e))
+        st_msg.link_button("Submit Curl Command", "/Parse_curl_command")
+        st.stop()
+
     data = [j for i in responses for j in i["properties"] if "PROP_ID" in j]
     logger.info(f"Shape of data after gathering SRP: {len(data)}")
     if data:

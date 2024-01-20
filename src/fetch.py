@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import httpx
 
-from src.constants import BASE_REQUESTS_PATH, MAIN_REQUESTS_PATH
+from src.constants import REQUESTS_JSON_PATH
+from src.errors import ResquestsJsonNotFoundError
 from src.logger import get_logger
 from src.utils import progress_bar_nums
 
@@ -13,15 +14,6 @@ if TYPE_CHECKING:
     from streamlit.elements.lib.mutable_status_container import StatusContainer
 
 logger = get_logger(__name__)
-
-
-def get_requests_json() -> dict[str, Any]:
-    if MAIN_REQUESTS_PATH.exists():
-        with MAIN_REQUESTS_PATH.open() as f:
-            return json.load(f)
-
-    with BASE_REQUESTS_PATH.open() as f:
-        return json.load(f)
 
 
 def __update_url_params(params_dict: dict, page_num: int, prop_per_page: int) -> dict:
@@ -55,8 +47,15 @@ async def fetch_all_responses(
     status: StatusContainer,
     **get_requests_kwargs,
 ) -> list[dict]:
-    if len(get_requests_kwargs) == 0:
-        get_requests_kwargs = get_requests_json()
+    if not get_requests_kwargs:
+        if not REQUESTS_JSON_PATH.exists():
+            raise ResquestsJsonNotFoundError(
+                "Submit lateset curl command in app. Check documentation on: "
+                "How to get the curl command?"
+            )
+        with REQUESTS_JSON_PATH.open() as f:
+            get_requests_kwargs = json.load(f)
+
     get_requests_kwargs["params"]["city"] = city_id
 
     _ = progress_bar_nums(len(page_nums))

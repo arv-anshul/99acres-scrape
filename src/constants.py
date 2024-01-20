@@ -8,8 +8,7 @@ SRP_COLUMNS_PATH = Path("data/srp_columns.json")
 AMENITIES_PATH = Path("data/facets/AMENITIES.csv")
 CITY_W_ID_PATH = Path("data/city_w_id.json")
 
-BASE_REQUESTS_PATH = Path("base.requests.json")
-MAIN_REQUESTS_PATH = Path("requests.json")
+REQUESTS_JSON_PATH = Path("requests.json")
 
 REQUEST_HEADERS = {
     "user-agent": (
