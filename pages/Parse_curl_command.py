@@ -3,7 +3,7 @@ import json
 import curler
 import streamlit as st
 
-from src.components.fetch import REQUESTS_PATH
+from src.fetch import REQUESTS_PATH
 
 st.set_page_config("Parse curl command", "🎱", "wide", "expanded")
 
