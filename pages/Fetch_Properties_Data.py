@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 
 st.header(":red[🏠 Fetch Real Estate Properties Data from] :blue[99acres.com]")
 
-with open(CITY_W_ID_PATH) as f:
+with CITY_W_ID_PATH.open() as f:
     CITY_W_ID: dict[str, str] = json.load(f)
 
 
@@ -96,7 +96,7 @@ async def fetch_raw_data():
     responses = await fetch.fetch_all_responses(
         list(page_nums), int(prop_per_page), city_id=int(city_id), status=status
     )
-    data = [j for i in responses for j in i["properties"] if "PROP_ID" in j.keys()]
+    data = [j for i in responses for j in i["properties"] if "PROP_ID" in j]
     logger.info(f"Shape of data after gathering SRP: {len(data)}")
     return pd.DataFrame(data)
 

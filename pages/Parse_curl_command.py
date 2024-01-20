@@ -86,7 +86,7 @@ with st.expander("😎 See parsed cURL command!"):
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
 # Store all the required data into `requests.json` file
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
-with open(REQUESTS_PATH, "w") as f:
+with REQUESTS_PATH.open("w") as f:
     json.dump(
         {
             "url": parsed.url,

@@ -63,7 +63,7 @@ async def fetch_all_responses(
     )
     async with httpx.AsyncClient() as session:
         responses = []
-        for i, page_num in zip(_, page_nums):
+        for i, page_num in zip(_, page_nums, strict=False):
             get_requests_kwargs["params"] = __update_url_params(
                 get_requests_kwargs["params"], page_num, prop_per_page
             )

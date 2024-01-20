@@ -15,10 +15,10 @@ def amenities_to_csv() -> None:
     amenities = utils.get_request(url)["propertyAmenity"]
 
     df = pd.DataFrame([j for i in amenities for j in amenities[i]["default"]])
-    df.sort_values(by=["category", "id"], inplace=True)
+    df = df.sort_values(by=["category", "id"])
 
     duplicated_idx = df[df["id"].duplicated()].index
-    df.drop(columns=["url"], index=duplicated_idx, inplace=True)
+    df = df.drop(columns=["url"], index=duplicated_idx)
 
     df.to_csv(AMENITIES_PATH, index=False)
     logger.info(f'Export: "{AMENITIES_PATH}"')

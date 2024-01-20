@@ -13,8 +13,8 @@ def store_city_w_id_mapping() -> None:
     cities = [i["label"] for i in data]
 
     CITY_W_ID_PATH.parent.mkdir(exist_ok=True)
-    with open(CITY_W_ID_PATH, "w") as f:
-        json.dump(dict(zip(ids, cities)), f, indent=2, sort_keys=True)
+    with CITY_W_ID_PATH.open("w") as f:
+        json.dump(dict(zip(ids, cities, strict=False)), f, indent=2, sort_keys=True)
 
 
 if __name__ == "__main__":
