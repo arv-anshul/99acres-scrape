@@ -1,12 +1,16 @@
+from __future__ import annotations
+
 import json
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import httpx
-from streamlit.elements.lib.mutable_status_container import StatusContainer
 
 from src.logger import get_logger
 from src.utils import progress_bar_nums
+
+if TYPE_CHECKING:
+    from streamlit.elements.lib.mutable_status_container import StatusContainer
 
 logger = get_logger(__name__)
 

@@ -1,15 +1,20 @@
+from __future__ import annotations
+
 import asyncio
 import json
+from typing import TYPE_CHECKING
 from warnings import filterwarnings
 
 import pandas as pd
 import streamlit as st
-from streamlit.elements.lib.mutable_status_container import StatusContainer
 
 from src import fetch
 from src.constants import CITY_W_ID_PATH, SRP_CSV_PATH
 from src.logger import get_logger
 from src.utils import SRP_DATA_COLUMNS
+
+if TYPE_CHECKING:
+    from streamlit.elements.lib.mutable_status_container import StatusContainer
 
 filterwarnings("ignore", category=pd.errors.DtypeWarning)
 
