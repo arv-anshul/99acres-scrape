@@ -33,15 +33,18 @@ def __update_url_params(params_dict: dict, page_num: int, prop_per_page: int) ->
 
 
 async def __fetch_response(session: httpx.AsyncClient, **get_requests_kwargs) -> dict:
-    r = await session.get(**get_requests_kwargs, timeout=3)
-    msg = f"[{r.status_code}]:{r.url}"
-    logger.info(msg)
+    try:
+        r = await session.get(**get_requests_kwargs, timeout=3)
+    except httpx.TimeoutException:
+        logger.error(f"Timeout while requesting on {get_requests_kwargs['url']}")
+        raise
 
-    if r.status_code > 200:
-        logger.exception(msg)
-        r.raise_for_status()
-
-    return r.json()
+    if r.status_code == 200:
+        return r.json()
+    logger.error(r.text)
+    raise httpx.HTTPStatusError(
+        f"{r.status_code}:{r.url}", request=r.request, response=r
+    )
 
 
 async def fetch_all_responses(
@@ -78,7 +81,6 @@ async def fetch_all_responses(
                 responses.append(await __fetch_response(session, **get_requests_kwargs))
             except Exception as e:
                 logger.exception(e)
-                print(f"**ERROR**: {e}")
                 return responses
 
     return responses

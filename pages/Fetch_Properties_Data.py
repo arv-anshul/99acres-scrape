@@ -102,7 +102,11 @@ async def fetch_raw_data():
     )
     data = [j for i in responses for j in i["properties"] if "PROP_ID" in j]
     logger.info(f"Shape of data after gathering SRP: {len(data)}")
-    return pd.DataFrame(data)
+    if data:
+        return pd.DataFrame(data)
+    st.error("There is a error while requesting data. Check logs for more information.")
+    status.update(label="Error while fetching data.", expanded=True, state="error")
+    st.stop()
 
 
 async def clean_raw_data(df: pd.DataFrame) -> pd.DataFrame:
