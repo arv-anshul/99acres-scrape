@@ -72,7 +72,7 @@ else:
 
 # Parse the command and show the error if any occurred
 try:
-    parsed = curler.curl_command_parser(command)
+    parsed = curler.parse_curl(command)
 except Exception as e:
     st_msg.error(e, icon="🫨")
     st.toast("Some Error Occurred!", icon="🐛")

@@ -1,3 +1,4 @@
 httpx==0.24.1
 pandas==2.0.3
 streamlit==1.27.0
+curler==0.2.2
