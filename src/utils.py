@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Generator
 
 import httpx
 
@@ -88,7 +88,6 @@ def get_request(url: str) -> dict[str, Any]:
     return r.json()
 
 
-def progress_bar_nums(page_nums: list[int] | range):
-    n = len(page_nums)
-    for i in range(1, n + 1):
-        yield i * (1 / n)
+def progress_bar_nums(n_pages: int) -> Generator[float, None, None]:
+    for i in range(1, n_pages + 1):
+        yield i * (1 / n_pages)

@@ -59,7 +59,7 @@ async def fetch_all_responses(
         get_requests_kwargs = get_requests_json()
     get_requests_kwargs["params"]["city"] = city_id
 
-    _ = progress_bar_nums(page_nums)
+    _ = progress_bar_nums(len(page_nums))
     progress = status.progress(
         0,
         f"🪝 Fetching Data of Page {page_nums[0]}/{page_nums[-1]}. "
