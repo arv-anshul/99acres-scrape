@@ -1,4 +1,4 @@
-httpx==0.24.1
-pandas==2.0.3
-streamlit==1.27.0
+httpx==0.26.0
+pandas==2.1.4
+streamlit==1.30.0
 curler==0.2.2
