@@ -9,9 +9,8 @@ import pandas as pd
 import streamlit as st
 
 from src import fetch
-from src.constants import CITY_W_ID_PATH, SRP_CSV_PATH
+from src.constants import CITY_W_ID_PATH, SRP_COLUMNS_PATH, SRP_CSV_PATH
 from src.logger import get_logger
-from src.utils import SRP_DATA_COLUMNS
 
 if TYPE_CHECKING:
     from streamlit.elements.lib.mutable_status_container import StatusContainer
@@ -136,7 +135,7 @@ async def store_df(status: StatusContainer):
 
     if not want_whole_data:
         status.write("🗑️ :gray[Filtered the data to keep only required columns.]")
-        df = df[list(set(df.columns) & set(SRP_DATA_COLUMNS))]
+        df = df[list(set(df.columns) & set(json.loads(SRP_COLUMNS_PATH.read_bytes())))]
         status.write(f"🧩 :green[Shape after filtering:] **{df.shape}**")
     else:
         status.write("❌ :red[Filtering on fetched data not applied.]")

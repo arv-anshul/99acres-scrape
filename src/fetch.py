@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import httpx
 
+from src.constants import BASE_REQUESTS_PATH, MAIN_REQUESTS_PATH
 from src.logger import get_logger
 from src.utils import progress_bar_nums
 
@@ -14,13 +14,10 @@ if TYPE_CHECKING:
 
 logger = get_logger(__name__)
 
-BASE_REQUESTS_PATH = Path("base.requests.json")
-REQUESTS_PATH = Path("requests.json")
-
 
 def get_requests_json() -> dict[str, Any]:
-    if REQUESTS_PATH.exists():
-        with REQUESTS_PATH.open() as f:
+    if MAIN_REQUESTS_PATH.exists():
+        with MAIN_REQUESTS_PATH.open() as f:
             return json.load(f)
 
     with BASE_REQUESTS_PATH.open() as f:

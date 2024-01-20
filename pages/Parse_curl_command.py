@@ -3,7 +3,7 @@ import json
 import curler
 import streamlit as st
 
-from src.fetch import REQUESTS_PATH
+from src.constants import MAIN_REQUESTS_PATH
 
 st.set_page_config("Parse curl command", "🎱", "wide", "expanded")
 
@@ -11,10 +11,10 @@ st.header(":green[Parse your cURL command]", divider="green")
 st_msg = st.container()
 
 # A button to delete existing requests json file
-if REQUESTS_PATH.exists():
+if MAIN_REQUESTS_PATH.exists():
     st.button(
         "**🔥 Delete existing cURL command 🔥**",
-        on_click=REQUESTS_PATH.unlink,
+        on_click=MAIN_REQUESTS_PATH.unlink,
         use_container_width=True,
     )
 
@@ -86,7 +86,7 @@ with st.expander("😎 See parsed cURL command!"):
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
 # Store all the required data into `requests.json` file
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- #
-with REQUESTS_PATH.open("w") as f:
+with MAIN_REQUESTS_PATH.open("w") as f:
     json.dump(
         {
             "url": parsed.url,
