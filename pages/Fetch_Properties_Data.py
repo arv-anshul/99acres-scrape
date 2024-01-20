@@ -7,9 +7,9 @@ import streamlit as st
 from streamlit.elements.lib.mutable_status_container import StatusContainer
 
 from src import fetch
-from src.constants import CITY_W_ID_PATH
+from src.constants import CITY_W_ID_PATH, SRP_CSV_PATH
 from src.logger import get_logger
-from src.utils import SRP_DATA_COLUMNS, DFPath
+from src.utils import SRP_DATA_COLUMNS
 
 filterwarnings("ignore", category=pd.errors.DtypeWarning)
 
@@ -55,18 +55,18 @@ with st.form("fetch_data_from_99acres"):
     )
 
 if not form_submitted:
-    if DFPath.SRP.exists():
+    if SRP_CSV_PATH.exists():
         st.download_button(
             label="🏡 :green[**Download Previous Scrapped Data**] 🏡",
-            data=DFPath.SRP.read_text(),
+            data=SRP_CSV_PATH.read_text(),
             file_name="real_estate_previous_data.csv",
             mime=".csv",
-            on_click=DFPath.SRP.unlink,
+            on_click=SRP_CSV_PATH.unlink,
             use_container_width=True,
         )
         st.button(
             ":red[**Delete Previous Data**]",
-            on_click=DFPath.SRP.unlink,
+            on_click=SRP_CSV_PATH.unlink,
             use_container_width=True,
         )
     st.stop()
@@ -108,8 +108,8 @@ async def clean_raw_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
 async def merge_existing_data(df: pd.DataFrame) -> pd.DataFrame:
-    if DFPath.SRP.exists():
-        old_df = pd.read_csv(DFPath.SRP)
+    if SRP_CSV_PATH.exists():
+        old_df = pd.read_csv(SRP_CSV_PATH)
         status.write(f"🗂️ :orange[Shape of stored data:] **{old_df.shape}**")
         df = pd.concat([old_df, df])
 
@@ -139,8 +139,8 @@ async def store_df(status: StatusContainer):
     df = await merge_existing_data(df)
     status.write(f"🥳 :violet[We have total scrapped data shape:] **{df.shape}**")
 
-    status.write(f'🌐 :blue[Storing the data at] "{DFPath.SRP}"')
-    df.to_csv(DFPath.SRP, index=False)
+    status.write(f'🌐 :blue[Storing the data at] "{SRP_CSV_PATH}"')
+    df.to_csv(SRP_CSV_PATH, index=False)
 
 
 with st.status("🎉 Scrapping process starts!", expanded=True) as status:
@@ -154,7 +154,7 @@ with st.status("🎉 Scrapping process starts!", expanded=True) as status:
 
 if st.download_button(
     label="Download Scrapped Data",
-    data=DFPath.SRP.read_text(),
+    data=SRP_CSV_PATH.read_text(),
     file_name=f"real_estate_{CITY_W_ID[city_id]}.csv",
     mime=".csv",
     type="primary",

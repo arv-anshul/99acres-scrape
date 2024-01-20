@@ -1,5 +1,4 @@
-from pathlib import Path
-from typing import Any, NamedTuple
+from typing import Any
 
 import httpx
 
@@ -80,12 +79,6 @@ SRP_DATA_COLUMNS = [
     "TRANSACT_TYPE",
     "xid",
 ]
-
-
-class DFPath(NamedTuple):
-    FACETS_DIR = Path("data/facets")
-    PROJECTS = Path("data/projects.csv")
-    SRP = Path("data/srp.csv")
 
 
 def get_request(url: str) -> dict[str, Any]:
