@@ -1,5 +1,14 @@
 # Scrape 99Acres
 
+> \[!CAUTION\]
+>
+> **Message from Author:** I ([Anshul Raj Verma](https://github.com/arv-anshul)) am not
+> able to scrape 99acres website using this streamlit app due to some unathorization
+> issue.
+>
+> BTW, you can use and try to scrape the website and if you are able to scrape, please
+> raise a issue to discuss the problem. Thanks!
+
 > [!IMPORTANT]
 >
 > **DISCLAIMER:** This project is only for education purpose.
