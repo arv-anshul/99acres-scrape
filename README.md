@@ -19,6 +19,14 @@ I am working on a real estate project. So I need real-time data for that so I wr
 
 Check out my Data Analysis on the scrapped data [here](https://github.com/arv-anshul/campusx-project-notebooks).
 
+### Datasets
+
+I've scrape and uploaded some cities data in my Kaggle profile you can download that
+and practice. It contains **more than 40k+** properties details from different Indian cities.
+
+Dataset on Kaggle:
+[**Indian Real Estate - 99acres.com**](https://www.kaggle.com/datasets/arvanshul/gurgaon-real-estate-99acres-com)
+
 ### Documentation
 
 Documentation for this project is available in [🗒️ wiki](https://github.com/arv-anshul/99acres-scrape/wiki) section.
